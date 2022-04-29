@@ -6,7 +6,6 @@
 
 from cmath import cos, pi, sin
 import dis
-from tkinter.messagebox import NO
 from OpenGL.GL import *
 from Asteroide import Asteroide
 from Nave_Enemiga import *
@@ -26,6 +25,8 @@ class App:
     asteroides = []
 
     nave_enemiga = Nave_Enemiga()
+    
+
 
     def actualizar(self):
 
@@ -39,7 +40,7 @@ class App:
             if asteroide.vivo:
                 asteroide.actualizar(tiempo_delta)
                 #if asteroide.colisionando(self.nave):
-                    #self.nave.herido = True
+                #    self.nave.herido = True
                 if asteroide.colisionando(self.nave_enemiga):
                     self.nave_enemiga.herida = True
                 for bala in self.nave.balas:
@@ -47,7 +48,9 @@ class App:
                         if asteroide.colisionando(bala):
                             bala.disparando = False
                             asteroide.vivo = False
-        self.tiempo_anterior = tiempo_actual  
+        self.tiempo_anterior = tiempo_actual
+
+
 
     def draw(self):
         self.nave.dibujar()
@@ -77,7 +80,6 @@ class App:
             mi_asteroide = Asteroide(-0.4, 0.7, 45.0, 1.0)
 
     def main(self):
-
         global app
 
         width = 700
@@ -118,8 +120,8 @@ class App:
 
         self.inicializar_asteroides()
 
-        #Inicializar el Stream Thread
-        self.stream_thread = StreamThread()
+        #iniciar StreamThread
+        self.stream_thread = StreamThread(self)
         self.stream_thread.daemon = True
         self.stream_thread.start()
 
@@ -146,12 +148,9 @@ class App:
 
         glfw.destroy_window(self.window)
         glfw.terminate()
-
         self.stream_thread.stream.abort()
         self.stream_thread.event.set()
         self.stream_thread.join()
-
-app = None
 
 if __name__ == "__main__":
     app = App()
